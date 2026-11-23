@@ -1,2 +1,20 @@
-# Energoals-
-EnerGoals is a premium self-mastery and productivity platform designed to turn discipline into daily progress. Track habits, achieve goals, build routines, monitor personal growth, and stay consistent through intelligent insights, progress analytics, and a rewarding XP-based system.
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
+
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/4e8bef51-d364-4e83-90d4-323b9ecad41a
+
+## Run Locally
+
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User document & subcollections
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+
+      match /habits/{habitId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /goals/{goalId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /routines/{routineId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /journal/{journalId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /focus_sessions/{sessionId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /completion_records/{recordId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Community Challenges
+    match /challenges/{challengeId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && (
+        resource.data.createdByUserId == request.auth.uid || 
+        request.auth.token.admin == true
+      );
+
+      match /participants/{participantId} {
+        allow read: if true;
+        allow write: if isAuthenticated() && request.auth.uid == participantId;
+      }
+    }
+
+    // Connection testing
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

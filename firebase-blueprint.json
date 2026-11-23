@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with level, XP, and personal telemetry",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "currentLevel": { "type": "number" },
+        "currentXP": { "type": "number" },
+        "totalLifetimeXP": { "type": "number" },
+        "totalStreaks": { "type": "number" },
+        "momentumScore": { "type": "number" },
+        "lastCheckInDate": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "currentLevel", "totalLifetimeXP"]
+    },
+    "Habit": {
+      "title": "Habit",
+      "description": "Habit definition and current tracking state",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "enum": ["Fitness", "Productivity", "Mindfulness", "Learning", "Health", "Finance", "Custom"] },
+        "type": { "type": "string", "enum": ["binary", "quantitative", "timing"] },
+        "difficulty": { "type": "string", "enum": ["Easy", "Medium", "Hard", "Very Hard"] },
+        "frequency": { "type": "string", "enum": ["daily", "weekly", "weekdays", "weekends", "custom"] },
+        "targetValue": { "type": "number" },
+        "currentValue": { "type": "number" },
+        "streak": { "type": "number" },
+        "completedToday": { "type": "boolean" },
+        "isPaused": { "type": "boolean" },
+        "isArchived": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "category", "type", "frequency"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Milestone objective with target date and linked habits",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 500 },
+        "progress": { "type": "number" },
+        "targetDate": { "type": "string", "maxLength": 50 },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "progress"]
+    },
+    "Routine": {
+      "title": "Routine",
+      "description": "Routine workflow stacking multiple habits",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 500 },
+        "time": { "type": "string", "maxLength": 50 },
+        "duration": { "type": "string", "maxLength": 50 },
+        "color": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "name"]
+    },
+    "JournalEntry": {
+      "title": "JournalEntry",
+      "description": "Daily reflection or session note",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 50 },
+        "title": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "mood": { "type": "string", "maxLength": 50 },
+        "energy": { "type": "number" }
+      },
+      "required": ["id", "date", "title", "content"]
+    },
+    "FocusSessionRecord": {
+      "title": "FocusSessionRecord",
+      "description": "Deep work focus timer session log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "habitId": { "type": "string", "maxLength": 128 },
+        "habitName": { "type": "string", "maxLength": 150 },
+        "durationMinutes": { "type": "number" },
+        "actualSecondsCompleted": { "type": "number" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "xpEarned": { "type": "number" },
+        "mode": { "type": "string", "enum": ["focus", "break"] },
+        "distractionCount": { "type": "number" }
+      },
+      "required": ["id", "durationMinutes", "completedAt", "xpEarned"]
+    },
+    "CompletionRecord": {
+      "title": "CompletionRecord",
+      "description": "Idempotent record of daily habit completion and XP awarded",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "habitId": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 20 },
+        "completed": { "type": "boolean" },
+        "xpAwarded": { "type": "number" },
+        "completionType": { "type": "string", "enum": ["binary", "quantitative", "timing"] },
+        "completionValue": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "habitId", "date", "completed", "xpAwarded"]
+    },
+    "Challenge": {
+      "title": "Challenge",
+      "description": "Public or community habit challenge",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "createdByUserId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 500 },
+        "goalType": { "type": "string", "enum": ["streak", "count", "minutes", "custom"] },
+        "goalTarget": { "type": "number" },
+        "startAt": { "type": "string", "format": "date-time" },
+        "endAt": { "type": "string", "format": "date-time" },
+        "participantCount": { "type": "number" }
+      },
+      "required": ["id", "title", "goalType"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile with stats and XP"
+    },
+    "/users/{userId}/habits/{habitId}": {
+      "schema": "Habit",
+      "description": "User habits"
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "User fitness and personal goals"
+    },
+    "/users/{userId}/routines/{routineId}": {
+      "schema": "Routine",
+      "description": "User morning, evening, or custom routines"
+    },
+    "/users/{userId}/journal/{journalId}": {
+      "schema": "JournalEntry",
+      "description": "User reflections and journal notes"
+    },
+    "/users/{userId}/focus_sessions/{sessionId}": {
+      "schema": "FocusSessionRecord",
+      "description": "Deep work focus timer session history"
+    },
+    "/users/{userId}/completion_records/{recordId}": {
+      "schema": "CompletionRecord",
+      "description": "Idempotent completion tracking records"
+    },
+    "/challenges/{challengeId}": {
+      "schema": "Challenge",
+      "description": "Community Challenges"
+    }
+  }
+}
